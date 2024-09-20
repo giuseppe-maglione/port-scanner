@@ -1,6 +1,5 @@
 import socket
 import threading
-from multiprocessing import Queue
 import sys
 
 options = [1,2,3]
