@@ -1,2 +1,2 @@
 # port-scanner
-Port scanning tool - Python socket and threads
+Port scanning tool - Python Socket and Threads
