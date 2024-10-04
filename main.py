@@ -12,6 +12,19 @@ common_tld = ['.com', '.org', '.net', '.edu', '.gov', '.mil', '.int', '.info', '
                 '.za', '.gr', '.ar', '.pl', '.eu', '.asia', '.tv', '.me', '.io'
             ]
 
+def print_ascii_art():
+    print("""
+$$$$$$$\                    $$\     $$$$$$\                                                       
+$$  __$$\                   $$ |   $$  __$$\                                                      
+$$ |  $$ |$$$$$$\  $$$$$$\$$$$$$\  $$ /  \__|$$$$$$$\$$$$$$\ $$$$$$$\ $$$$$$$\  $$$$$$\  $$$$$$\  
+$$$$$$$  $$  __$$\$$  __$$\_$$  _| \$$$$$$\ $$  _____\____$$\$$  __$$\$$  __$$\$$  __$$\$$  __$$\ 
+$$  ____/$$ /  $$ $$ |  \__|$$ |    \____$$\$$ /     $$$$$$$ $$ |  $$ $$ |  $$ $$$$$$$$ $$ |  \__|
+$$ |     $$ |  $$ $$ |      $$ |$$\$$\   $$ $$ |    $$  __$$ $$ |  $$ $$ |  $$ $$   ____$$ |      
+$$ |     \$$$$$$  $$ |      \$$$$  \$$$$$$  \$$$$$$$\$$$$$$$ $$ |  $$ $$ |  $$ \$$$$$$$\$$ |      
+\__|      \______/\__|       \____/ \______/ \_______\_______\__|  \__\__|  \__|\_______\__|      
+                                                                                                 
+    """)
+
 def worker(host, port, name):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(4)
@@ -21,6 +34,20 @@ def worker(host, port, name):
     else:
         closed_ports[port] = name
     sock.close()
+
+def get_ip(target):
+    for tld in common_tld:
+        if tld in target:
+            try:
+                ip = socket.gethostbyname(target)
+            except socket.gaierror:
+                print('Unable to resolve hostname: ' + str(target))
+                sys.exit(1)
+            else:
+                break
+        else:
+            ip = target
+    return ip
 
 def get_ports(input):
     for item in input.split(','):
@@ -50,21 +77,12 @@ def print_result(open_ports, closed_ports):
 if __name__ == '__main__':
 
     print('-'*50)
-    
-    print('Port scanner tool')
+    print_ascii_art()
+
+    print('Port scanning tool (Socket version)')
     print('GitHub: https://github.com/giuseppe-maglione/port-scanner')
     target = input('Enter an IP andress or a domain: ')
-    for tld in common_tld:
-        if tld in target:
-            try:
-                ip = socket.gethostbyname(target)
-            except socket.gaierror:
-                print('Unable to resolve hostname: ' + str(target))
-                sys.exit(-1)
-            else:
-                break
-    else:
-        ip = target
+    ip = get_ip(target)
 
     print('Available scan types...')
     print('[+] 1. Common port scanning.')
@@ -108,6 +126,7 @@ if __name__ == '__main__':
     print('-'*50)    
     
     print_result(open_ports, closed_ports)
+    print('-'*50)
     sys.exit(0)
 
     
